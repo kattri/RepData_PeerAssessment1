@@ -2,7 +2,7 @@
 
 
 ## Loading and preprocessing the data
-*Have set Working Directory to the Cloned Folder  in Global Options*
+Have set Working Directory to the Cloned Folder  in Global Options
 
 
 ```r
@@ -14,8 +14,8 @@
 
 ## What is mean total number of steps taken per day?
 **Task1 : Histogram of Total Steps**  
-*Calcultaing the Number of Steps per Day and making a Histogram*  
-*Using Library dplyr*
+Calcultaing the Number of Steps per Day and making a Histogram  
+Using Library dplyr
 
 ```r
      library(dplyr,quietly=TRUE)
@@ -43,7 +43,7 @@
 
 ![](PA1_template_files/figure-html/dailysteps-1.png) 
 
-**Printing Mean and Median of the Daily Steps**
+Printing Mean and Median of the Daily Steps
 
 ```r
      mean(dailySteps$total_Steps,na.rm =TRUE)
@@ -75,8 +75,10 @@ interval_activity<-group_by(activityData,interval)
 
 ![](PA1_template_files/figure-html/Avg Activity Pattern-1.png) 
 
+Interval of Maximum Activity
+
 ```r
-     avg_steps[avg_steps$int_avg_steps==max(avg_steps$int_avg_steps),]$interval
+avg_steps[avg_steps$int_avg_steps==max(avg_steps$int_avg_steps),]$interval
 ```
 
 ```
@@ -86,7 +88,8 @@ interval_activity<-group_by(activityData,interval)
 
 ## Imputing missing values
 
-**Task 3: Input Missing Values using interval medians, Histogram**
+**Task 3: Input Missing Values using interval medians, Histogram**  
+Number of Missing Values
 
 ```r
      count(activityData[is.na(activityData$steps),])
@@ -99,11 +102,14 @@ interval_activity<-group_by(activityData,interval)
 ## 1 2304
 ```
 
+Creating a Median Steps per interval Data Frame
+
 ```r
-     median_steps<-summarise(interval_activity,
-                     int_median_steps =median(steps,na.rm =TRUE))
+   median_steps<-summarise(interval_activity,
+    int_median_steps =median(steps,na.rm =TRUE))
 ```
-*Function for Inserting Data from the interval Median Summary*
+
+Function for Inserting Data from the interval Median Summary
 
 ```r
   insertData<-function(df11,df22)
@@ -115,25 +121,14 @@ interval_activity<-group_by(activityData,interval)
    df11
 }
 ```
-*Filling in the missing Values into a new Data Frame and Making a Histogram*
+Filling in the missing Values into a new Data Frame and Making a Histogram
 
 ```r
    activityDataComplete<-insertData(activityData,median_steps)
-   count(activityDataComplete[is.na(activityDataComplete$steps),])
-```
-
-```
-## Source: local data frame [1 x 1]
-## 
-##   n
-## 1 0
-```
-
-```r
+## count(activityDataComplete[is.na(activityDataComplete$steps),])
    stepsModified<-group_by(activityDataComplete,date)
    dailySteps1<-summarise(stepsModified,total_Steps =sum(steps))
-   hist(dailySteps1$total_Steps,main="Distribution of Daily Steps(NAs inserted)",
-     xlab ="Cummulative Daily Steps")
+   hist(dailySteps1$total_Steps,main="Distribution of Daily Steps(NAs inserted)", xlab ="Cummulative Daily Steps")
 ```
 
 ![](PA1_template_files/figure-html/Analysis using median of the intervals for NAs-1.png) 
@@ -143,6 +138,11 @@ interval_activity<-group_by(activityData,interval)
      b<- mean(dailySteps1$total_Steps,na.rm =TRUE)
      c<- median(dailySteps$total_Steps,na.rm =TRUE) 
      d<- median(dailySteps1$total_Steps,na.rm =TRUE)
+```
+Table of  Mean and Median for Original and Complete Data  
+It stays the nearly Same if I were to insert intevl means.
+
+```r
    matrix(c(a,b,c,d),2,2, dimnames = list(c("Original Data Set","Completed Data Set"),c("Mean","Median")))
 ```
 
@@ -156,9 +156,7 @@ interval_activity<-group_by(activityData,interval)
 *Task 4 Activity Patterns using an additonal Column and Panel Printing*
 
 ```r
-## Copied frrom the internet    
-   activityData$wend <-as.factor(ifelse(weekdays(as.Date(activityData$date)) %in% 
-                                  c("Saturday","Sunday"), "Weekend", "Weekday"))
+   activityData$wend <-as.factor(ifelse(weekdays(as.Date(activityData$date))   %in%   c("Saturday","Sunday"), "Weekend", "Weekday"))
       steps<-group_by(activityData,wend,interval)  
       weeklysteps<-summarise(steps,avg_steps=mean(steps,na.rm =TRUE))
       library(lattice)
@@ -167,4 +165,4 @@ interval_activity<-group_by(activityData,interval)
 ```
 
 ![](PA1_template_files/figure-html/Adding additional factor Column and then Comparing-1.png) 
-###End of Assignment
+##End of Assignment
